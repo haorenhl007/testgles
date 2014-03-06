@@ -9,7 +9,7 @@ add_definitions(-std=c++11)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
 
 # SDL2
-include_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.2/include)
+include_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.2/include/SDL2)
 link_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.2/lib/x86)
 
 # opengl es 2.0 (angle)
