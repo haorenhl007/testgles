@@ -1,0 +1,18 @@
+Hi!
+
+I program using SDL2 + opengles2 under linux without problems.
+Due to course requirements, i need compile and run applications (course jobs) under
+windows.
+I generated the libGLESv2 and libEGL libraries from the ANGLE project without
+problems. (I tested the libraries running Hello_Triangle from ANGLE samples.)
+Without doubt i do something wrong during the setup of SDL/OpenGL ES 2.0.
+
+Someone can see the app and tell me what is wrong with the library setup?
+The app only clear the window with the red color
+Thanks in advance,
+Juan!
+
+
+The instructions for build the app are in COMPILE.txt
+Cmake: http://www.cmake.org/files/v2.8/cmake-2.8.12.2-win32-x86.exe
+Visual Studio version used: Microsoft Visual Studio 12.0
