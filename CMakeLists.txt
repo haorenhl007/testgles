@@ -9,8 +9,8 @@ add_definitions(-std=c++11)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
 
 # SDL2
-include_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.1/include)
-link_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.1/lib/x86)
+include_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.2/include)
+link_directories(${CMAKE_SOURCE_DIR}/DEPS/SDL2-2.0.2/lib/x86)
 
 # opengl es 2.0 (angle)
 include_directories(${CMAKE_SOURCE_DIR}/DEPS/angle-e49d2/include)
@@ -23,7 +23,7 @@ target_link_libraries(emptySDL GLESv2)
 
 # copy lib files to build folder
 set(library_FILES
-        DEPS/SDL2-2.0.1/lib/x86/SDL2.dll
+        DEPS/SDL2-2.0.2/lib/x86/SDL2.dll
         DEPS/angle-e49d2/lib/d3dcompiler_46.dll
         DEPS/angle-e49d2/lib/libEGL.dll
         DEPS/angle-e49d2/lib/libGLESv2.dll)
