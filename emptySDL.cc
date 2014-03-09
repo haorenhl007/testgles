@@ -1,5 +1,6 @@
 #include <stdio.h> 
 #include <assert.h> 
+#include <string> 
 
 #include <SDL.h> 
 #include <SDL_opengles2.h> 
@@ -41,12 +42,34 @@ static int LoadContext(GLES2_Context * data)
     return 0;
 }
 
+void help()
+{
+    printf("use with --use-default or --use-loaded\n"
+           "\t-d --use-default  use default OpenGL ES functions\n"
+           "\t-l --use-loaded   use loaded OpenGL ES functions (prefixed with ctx.)\n");
+}
+
 
 // hack for Visual Studio
 #undef main
 
-int main(int _nArg, char *_aArg[]) 
+int main(int argc, char *argv[]) 
 { 
+    if (argc != 2) {
+        help();
+        return 0;
+    }
+    bool use_loaded;
+    std::string option {argv[1]};
+    if (option == "-d" || option == "--use-default") {
+        use_loaded = false;
+    } else if (option == "-l" || option == "--use-loaded") {
+        use_loaded = true;
+    } else {
+        help();
+        return 0;
+    }
+    
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES); 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2); 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0); 
@@ -58,42 +81,51 @@ int main(int _nArg, char *_aArg[])
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); 
 
-    SDL_Window * oWindow = SDL_CreateWindow("Default", 100, 100, 320, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL); 
+    SDL_Window * oWindow = SDL_CreateWindow("Default", 100, 100, 320, 240, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL); 
     assert(oWindow); 
     SDL_GLContext oGlContext = SDL_GL_CreateContext(oWindow); 
     assert(oGlContext); 
 
-    if (LoadContext(&ctx) < 0) {
+    // load context if needed
+    if (use_loaded && LoadContext(&ctx) < 0) {
         printf("Could not load GLES2 functions\n");
         SDL_GL_DeleteContext(oGlContext);
         return 0;
     }
 
+    // display context info
     SDL_DisplayMode mode;
     SDL_GetCurrentDisplayMode(0, &mode);
     printf("Screen bpp: %d\n", SDL_BITSPERPIXEL(mode.format));
     printf("\n");
-    // print loaded context info
-    printf("Vendor       : %s\n", ctx.glGetString(GL_VENDOR));
-    printf("Renderer     : %s\n", ctx.glGetString(GL_RENDERER));
-    printf("Version      : %s\n", ctx.glGetString(GL_VERSION));
-    printf("Extensions   : %s\n", ctx.glGetString(GL_EXTENSIONS));
-    printf("GLSL version : %s\n", ctx.glGetString(GL_SHADING_LANGUAGE_VERSION));
-    printf("\n");
-    // print default context info
-    printf("Vendor       : %s\n", glGetString(GL_VENDOR));
-    printf("Renderer     : %s\n", glGetString(GL_RENDERER));
-    printf("Version      : %s\n", glGetString(GL_VERSION));
-    printf("Extensions   : %s\n", glGetString(GL_EXTENSIONS));
-    printf("GLSL version : %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    printf("\n");
+    if (use_loaded) {
+        printf("Vendor       : %s\n", ctx.glGetString(GL_VENDOR));
+        printf("Renderer     : %s\n", ctx.glGetString(GL_RENDERER));
+        printf("Version      : %s\n", ctx.glGetString(GL_VERSION));
+        printf("Extensions   : %s\n", ctx.glGetString(GL_EXTENSIONS));
+        printf("GLSL version : %s\n", ctx.glGetString(GL_SHADING_LANGUAGE_VERSION));
+        printf("\n");
+    } else {
+        printf("Vendor       : %s\n", glGetString(GL_VENDOR));
+        printf("Renderer     : %s\n", glGetString(GL_RENDERER));
+        printf("Version      : %s\n", glGetString(GL_VERSION));
+        printf("Extensions   : %s\n", glGetString(GL_EXTENSIONS));
+        printf("GLSL version : %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+        printf("\n");
+    }
 
     SDL_GL_MakeCurrent(oWindow, oGlContext); 
 
     /* Clear our buffer with a red background */ 
-    ctx.glViewport(0, 0, 320, 480); 
-    ctx.glClearColor(1, 0, 0, 1); 
-    ctx.glClear(GL_COLOR_BUFFER_BIT); 
+    if (use_loaded) {
+        ctx.glViewport(0, 0, 320, 480); 
+        ctx.glClearColor(1, 0, 0, 1); 
+        ctx.glClear(GL_COLOR_BUFFER_BIT); 
+    } else {
+        glViewport(0, 0, 320, 480); 
+        glClearColor(1, 0, 0, 1); 
+        glClear(GL_COLOR_BUFFER_BIT); 
+    }
     SDL_GL_SwapWindow(oWindow); 
 
     bool quit = false;
