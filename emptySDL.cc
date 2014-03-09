@@ -1,9 +1,9 @@
-#include <stdio.h> 
-#include <assert.h> 
-#include <string> 
+#include <stdio.h>
+#include <assert.h>
+#include <string>
 
-#include <SDL.h> 
-#include <SDL_opengles2.h> 
+#include <SDL.h>
+#include <SDL_opengles2.h>
 
 
 typedef struct GLES2_Context
@@ -53,8 +53,8 @@ void help()
 // hack for Visual Studio
 #undef main
 
-int main(int argc, char *argv[]) 
-{ 
+int main(int argc, char *argv[])
+{
     if (argc != 2) {
         help();
         return 0;
@@ -69,24 +69,25 @@ int main(int argc, char *argv[])
         help();
         return 0;
     }
-    
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES); 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2); 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0); 
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
 
-    assert(SDL_Init(SDL_INIT_EVERYTHING) == 0); 
 
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); 
+    assert(SDL_Init(SDL_INIT_EVERYTHING) == 0);
 
-    SDL_Window * oWindow = SDL_CreateWindow("Default", 100, 100, 320, 240, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL); 
-    assert(oWindow); 
-    SDL_GLContext oGlContext = SDL_GL_CreateContext(oWindow); 
-    assert(oGlContext); 
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    SDL_Window * oWindow = SDL_CreateWindow("Default", 100, 100, 320, 240, SDL_WINDOW_OPENGL);
+    assert(oWindow);
+    SDL_GLContext oGlContext = SDL_GL_CreateContext(oWindow);
+    assert(oGlContext);
 
     // load context if needed
+    // Important: call this *after* creating the context
     if (use_loaded && LoadContext(&ctx) < 0) {
         printf("Could not load GLES2 functions\n");
         SDL_GL_DeleteContext(oGlContext);
@@ -114,19 +115,19 @@ int main(int argc, char *argv[])
         printf("\n");
     }
 
-    SDL_GL_MakeCurrent(oWindow, oGlContext); 
+    SDL_GL_MakeCurrent(oWindow, oGlContext);
 
-    /* Clear our buffer with a red background */ 
+    /* Clear our buffer with a red background */
     if (use_loaded) {
-        ctx.glViewport(0, 0, 320, 480); 
-        ctx.glClearColor(1, 0, 0, 1); 
-        ctx.glClear(GL_COLOR_BUFFER_BIT); 
+        ctx.glViewport(0, 0, 320, 480);
+        ctx.glClearColor(1, 0, 0, 1);
+        ctx.glClear(GL_COLOR_BUFFER_BIT);
     } else {
-        glViewport(0, 0, 320, 480); 
-        glClearColor(1, 0, 0, 1); 
-        glClear(GL_COLOR_BUFFER_BIT); 
+        glViewport(0, 0, 320, 480);
+        glClearColor(1, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
-    SDL_GL_SwapWindow(oWindow); 
+    SDL_GL_SwapWindow(oWindow);
 
     bool quit = false;
     while(!quit) {
@@ -136,11 +137,11 @@ int main(int argc, char *argv[])
                 quit = true;
             }
         }
-        SDL_Delay(100); 
+        SDL_Delay(100);
     }
-    SDL_GL_DeleteContext(oGlContext); 
-    SDL_DestroyWindow(oWindow); 
+    SDL_GL_DeleteContext(oGlContext);
+    SDL_DestroyWindow(oWindow);
 
-    SDL_Quit(); 
-    return 0; 
-} 
+    SDL_Quit();
+    return 0;
+}
